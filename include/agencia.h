@@ -35,6 +35,8 @@ public:
 
     void relatorio();
 
+    void demo();
+
     void salvar(string nomeArquivo);
     void carregar(string nomeArquivo);
 };

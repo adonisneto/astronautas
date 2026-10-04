@@ -822,3 +822,27 @@ void Agencia::relatorio() {
         cout << "taxa de sucesso: " << (sucessos * 100) / finalizados << "%" << endl;
     }
 }
+
+void Agencia::demo() {
+    // So carrega se a agencia estiver completamente vazia.
+    // Caso contrario, recusa sem alterar o estado atual.
+    if (!astronautas.empty() || !voos.empty()) {
+        cout << "ERRO: nao foi possivel carregar o cenario de demonstracao" << endl;
+        return;
+    }
+
+    cadastrarAstronauta("111", "Ana Maria", 30);
+    cadastrarAstronauta("222", "Bruno Costa", 35);
+    cadastrarVoo(10);
+    cadastrarVoo(20);
+    adicionarAstronauta("111", 10);
+    adicionarAstronauta("222", 10);
+    lancarVoo(10);
+    finalizarVoo(10);
+    adicionarAstronauta("111", 20);
+    adicionarAstronauta("222", 20);
+    lancarVoo(20);
+    explodirVoo(20);
+
+    cout << "OK: cenario de demonstracao carregado" << endl;
+}

@@ -79,6 +79,9 @@ int main() {
         } else if (comando == "RELATORIO") {
             agencia.relatorio();
 
+        } else if (comando == "DEMO") {
+            agencia.demo();
+
         } else if (comando == "SALVAR") {
             string nomeArquivo;
             cin >> nomeArquivo;
