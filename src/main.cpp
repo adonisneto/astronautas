@@ -76,6 +76,9 @@ int main() {
 
             agencia.historicoAstronauta(cpf);
 
+        } else if (comando == "RELATORIO") {
+            agencia.relatorio();
+
         } else if (comando == "SALVAR") {
             string nomeArquivo;
             cin >> nomeArquivo;

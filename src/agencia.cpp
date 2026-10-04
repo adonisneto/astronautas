@@ -737,3 +737,88 @@ void Agencia::historicoAstronauta(string cpf) {
         cout << "(nenhum voo)" << endl;
     }
 }
+
+void Agencia::relatorio() {
+    int voosPlanejados = 0;
+    int voosEmCurso = 0;
+    int sucessos = 0;
+    int explosoes = 0;
+
+    for (int i = 0; i < voos.size(); i++) {
+        if (voos[i].getEmPlanejamento()) {
+            voosPlanejados++;
+        } else if (voos[i].getEmCurso()) {
+            voosEmCurso++;
+        } else if (voos[i].getExplodido()) {
+            explosoes++;
+        } else {
+            sucessos++;
+        }
+    }
+
+    int totalAstronautas = astronautas.size();
+    int vivos = 0;
+
+    for (int i = 0; i < astronautas.size(); i++) {
+        if (astronautas[i].getVivo()) {
+            vivos++;
+        }
+    }
+
+    // Experiencia: quantidade de voos ja lancados em que o
+    // astronauta estava a bordo. Voo planejado nao conta.
+    int melhor = -1;
+    int expMelhor = 0;
+
+    for (int i = 0; i < astronautas.size(); i++) {
+        int experiencia = 0;
+
+        for (int j = 0; j < voos.size(); j++) {
+            if (voos[j].getEmPlanejamento()) {
+                continue;
+            }
+
+            vector<string> passageiros = voos[j].getPassageiros();
+
+            for (int k = 0; k < passageiros.size(); k++) {
+                if (passageiros[k] == astronautas[i].getCpf()) {
+                    experiencia++;
+                    break;
+                }
+            }
+        }
+
+        if (melhor == -1 || experiencia > expMelhor) {
+            if (experiencia > 0) {
+                melhor = i;
+                expMelhor = experiencia;
+            }
+        }
+    }
+
+    cout << "RELATORIO" << endl;
+    cout << "voos planejados: " << voosPlanejados << endl;
+    cout << "voos em curso: " << voosEmCurso << endl;
+    cout << "voos finalizados com sucesso: " << sucessos << endl;
+    cout << "voos finalizados com explosao: " << explosoes << endl;
+    cout << "astronautas cadastrados: " << totalAstronautas << endl;
+    cout << "astronautas vivos: " << vivos << endl;
+    cout << "astronautas mortos: " << totalAstronautas - vivos << endl;
+
+    if (melhor == -1) {
+        cout << "astronauta mais experiente: (nenhum)" << endl;
+    } else {
+        cout << "astronauta mais experiente: "
+             << astronautas[melhor].getCpf() << " "
+             << astronautas[melhor].getNome()
+             << " (voos lancados: " << expMelhor << ")" << endl;
+    }
+
+    int finalizados = sucessos + explosoes;
+
+    if (finalizados == 0) {
+        cout << "taxa de sucesso: (nenhum voo finalizado)" << endl;
+    } else {
+        cout << "taxa de sucesso: " << (sucessos * 100) / finalizados << "%" << endl;
+    }
+}

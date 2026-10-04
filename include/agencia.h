@@ -33,6 +33,8 @@ public:
     void listarAstronautas();
     void historicoAstronauta(string cpf);
 
+    void relatorio();
+
     void salvar(string nomeArquivo);
     void carregar(string nomeArquivo);
 };
