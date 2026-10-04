@@ -1,5 +1,192 @@
 #include "agencia.h"
 #include <iostream>
+#include <fstream>
+
+// Separa uma linha em partes, usando o separador informado.
+// Ex.: separar("111;Ana Maria;30", ';') -> {"111", "Ana Maria", "30"}
+vector<string> separar(string linha, char separador) {
+    vector<string> partes;
+    string atual = "";
+
+    for (int i = 0; i < linha.size(); i++) {
+        if (linha[i] == separador) {
+            partes.push_back(atual);
+            atual = "";
+        } else {
+            atual += linha[i];
+        }
+    }
+
+    partes.push_back(atual);
+    return partes;
+}
+
+// Verifica se o texto so tem digitos (sem espaco nem sinal).
+bool ehNumero(string texto) {
+    if (texto.empty()) {
+        return false;
+    }
+
+    for (int i = 0; i < texto.size(); i++) {
+        if (texto[i] < '0' || texto[i] > '9') {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void Agencia::salvar(string nomeArquivo) {
+    ofstream arquivo(nomeArquivo.c_str());
+
+    if (!arquivo.is_open()) {
+        cout << "ERRO: nao foi possivel salvar em " << nomeArquivo << endl;
+        return;
+    }
+
+    arquivo << "ASTRONAUTAS" << endl;
+
+    for (int i = 0; i < astronautas.size(); i++) {
+        arquivo << astronautas[i].getCpf() << ";"
+                << astronautas[i].getNome() << ";"
+                << astronautas[i].getIdade() << ";"
+                << (astronautas[i].getVivo() ? "sim" : "nao") << ";"
+                << (astronautas[i].getDisponivel() ? "sim" : "nao")
+                << endl;
+    }
+
+    arquivo << "VOOS" << endl;
+
+    for (int i = 0; i < voos.size(); i++) {
+        arquivo << voos[i].getCodigo() << ";"
+                << voos[i].getEstado() << ";";
+
+        vector<string> passageiros = voos[i].getPassageiros();
+
+        for (int j = 0; j < passageiros.size(); j++) {
+            if (j > 0) {
+                arquivo << " ";
+            }
+
+            arquivo << passageiros[j];
+        }
+
+        arquivo << endl;
+    }
+
+    arquivo.close();
+
+    cout << "OK: dados salvos em " << nomeArquivo << endl;
+}
+
+void Agencia::carregar(string nomeArquivo) {
+    ifstream arquivo(nomeArquivo.c_str());
+
+    if (!arquivo.is_open()) {
+        cout << "ERRO: nao foi possivel carregar de "
+             << nomeArquivo << endl;
+        return;
+    }
+
+    // Le tudo em vetores temporarios. So se a leitura inteira
+    // funcionar e que os dados atuais sao substituidos.
+    vector<Astronauta> novosAstronautas;
+    vector<Voo> novosVoos;
+    string linha;
+    bool naSecaoVoos = false;
+    bool achouAstronautas = false;
+    bool achouVoos = false;
+    bool invalido = false;
+
+    while (getline(arquivo, linha)) {
+        if (linha == "ASTRONAUTAS") {
+            achouAstronautas = true;
+            continue;
+        }
+
+        if (linha == "VOOS") {
+            naSecaoVoos = true;
+            achouVoos = true;
+            continue;
+        }
+
+        if (linha.empty()) {
+            continue;
+        }
+
+        if (!achouAstronautas) {
+            invalido = true;
+            break;
+        }
+
+        if (!naSecaoVoos) {
+            vector<string> partes = separar(linha, ';');
+
+            if (partes.size() != 5) {
+                invalido = true;
+                break;
+            }
+
+            string vivoTexto = partes[3];
+            string disponivelTexto = partes[4];
+
+            if ((vivoTexto != "sim" && vivoTexto != "nao") ||
+                (disponivelTexto != "sim" && disponivelTexto != "nao") ||
+                !ehNumero(partes[2])) {
+                invalido = true;
+                break;
+            }
+
+            Astronauta astronauta(partes[0], partes[1], stoi(partes[2]));
+            astronauta.setVivo(vivoTexto == "sim");
+            astronauta.setDisponivel(disponivelTexto == "sim");
+            novosAstronautas.push_back(astronauta);
+        } else {
+            vector<string> partes = separar(linha, ';');
+
+            if (partes.size() != 3) {
+                invalido = true;
+                break;
+            }
+
+            string estado = partes[1];
+
+            if (!ehNumero(partes[0]) ||
+                (estado != "planejado" && estado != "em curso" &&
+                estado != "finalizado com sucesso" &&
+                estado != "finalizado com explosao")) {
+                invalido = true;
+                break;
+            }
+
+            Voo voo(stoi(partes[0]));
+            voo.setEstado(estado);
+
+            vector<string> cpfs = separar(partes[2], ' ');
+
+            for (int i = 0; i < cpfs.size(); i++) {
+                if (!cpfs[i].empty()) {
+                    voo.adicionarAstronauta(cpfs[i]);
+                }
+            }
+
+            novosVoos.push_back(voo);
+        }
+    }
+
+    arquivo.close();
+
+    if (invalido || !achouAstronautas || !achouVoos) {
+        cout << "ERRO: nao foi possivel carregar de "
+             << nomeArquivo << endl;
+        return;
+    }
+
+    astronautas = novosAstronautas;
+    voos = novosVoos;
+
+    cout << "OK: dados carregados de " << nomeArquivo << endl;
+}
 
 void Agencia::cadastrarAstronauta(string cpf, string nome, int idade) {
     if (buscarAstronauta(cpf) != nullptr) {

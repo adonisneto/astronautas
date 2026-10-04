@@ -32,6 +32,40 @@ vector<string> Voo::getPassageiros() {
     return passageiros;
 }
 
+string Voo::getEstado() {
+    if (emPlanejamento) {
+        return "planejado";
+    }
+
+    if (emCurso) {
+        return "em curso";
+    }
+
+    if (explodido) {
+        return "finalizado com explosao";
+    }
+
+    return "finalizado com sucesso";
+}
+
+void Voo::setEstado(string estado) {
+    emPlanejamento = false;
+    emCurso = false;
+    finalizado = false;
+    explodido = false;
+
+    if (estado == "planejado") {
+        emPlanejamento = true;
+    } else if (estado == "em curso") {
+        emCurso = true;
+    } else if (estado == "finalizado com sucesso") {
+        finalizado = true;
+    } else if (estado == "finalizado com explosao") {
+        finalizado = true;
+        explodido = true;
+    }
+}
+
 void Voo::adicionarAstronauta(string cpf) {
     passageiros.push_back(cpf);
 }

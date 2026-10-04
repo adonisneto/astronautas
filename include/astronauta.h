@@ -22,6 +22,7 @@ public:
     bool getVivo();
     bool getDisponivel();
     void setDisponivel(bool disponivel);
+    void setVivo(bool vivo);
     void morrer();
 };
 

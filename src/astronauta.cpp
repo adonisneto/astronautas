@@ -30,6 +30,9 @@ bool Astronauta::getDisponivel() {
 void Astronauta::setDisponivel(bool disponivel) {
     this->disponivel = disponivel;
 }
+void Astronauta::setVivo(bool vivo) {
+    this->vivo = vivo;
+}
 void Astronauta::morrer() {
     vivo = false;
     disponivel = false;

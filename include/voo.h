@@ -25,6 +25,8 @@ public:
     bool getExplodido();
 
     vector<string> getPassageiros();
+    string getEstado();
+    void setEstado(string estado);
 
     void adicionarAstronauta(string cpf);
     void removerAstronauta(string cpf);

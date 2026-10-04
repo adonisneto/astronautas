@@ -76,6 +76,18 @@ int main() {
 
             agencia.historicoAstronauta(cpf);
 
+        } else if (comando == "SALVAR") {
+            string nomeArquivo;
+            cin >> nomeArquivo;
+
+            agencia.salvar(nomeArquivo);
+
+        } else if (comando == "CARREGAR") {
+            string nomeArquivo;
+            cin >> nomeArquivo;
+
+            agencia.carregar(nomeArquivo);
+
         } else {
             cout << "ERRO: comando desconhecido " << comando << endl;
         }
