@@ -415,3 +415,138 @@ void Agencia::listarMortos() {
         cout << "(nenhum)" << endl;
     }
 }
+
+void Agencia::listarAstronautas() {
+    cout << "LISTA DE ASTRONAUTAS" << endl;
+
+    cout << "== disponiveis ==" << endl;
+    bool encontrou = false;
+
+    for (int i = 0; i < astronautas.size(); i++) {
+        if (astronautas[i].getVivo() && astronautas[i].getDisponivel()) {
+            encontrou = true;
+
+            cout << astronautas[i].getCpf() << " "
+                 << astronautas[i].getNome() << " ("
+                 << astronautas[i].getIdade() << " anos)" << endl;
+        }
+    }
+
+    if (!encontrou) {
+        cout << "(nenhum)" << endl;
+    }
+
+    cout << "== em voo ==" << endl;
+    encontrou = false;
+
+    for (int i = 0; i < astronautas.size(); i++) {
+        if (astronautas[i].getVivo() && !astronautas[i].getDisponivel()) {
+            for (int j = 0; j < voos.size(); j++) {
+                if (!voos[j].getEmCurso()) {
+                    continue;
+                }
+
+                vector<string> passageiros = voos[j].getPassageiros();
+                bool participa = false;
+
+                for (int k = 0; k < passageiros.size(); k++) {
+                    if (passageiros[k] == astronautas[i].getCpf()) {
+                        participa = true;
+                        break;
+                    }
+                }
+
+                if (participa) {
+                    encontrou = true;
+
+                    cout << astronautas[i].getCpf() << " "
+                         << astronautas[i].getNome() << " ("
+                         << astronautas[i].getIdade() << " anos) - voo "
+                         << voos[j].getCodigo() << endl;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!encontrou) {
+        cout << "(nenhum)" << endl;
+    }
+
+    cout << "== mortos ==" << endl;
+    encontrou = false;
+
+    for (int i = 0; i < astronautas.size(); i++) {
+        if (!astronautas[i].getVivo()) {
+            encontrou = true;
+
+            cout << astronautas[i].getCpf() << " "
+                 << astronautas[i].getNome() << " ("
+                 << astronautas[i].getIdade() << " anos)" << endl;
+        }
+    }
+
+    if (!encontrou) {
+        cout << "(nenhum)" << endl;
+    }
+}
+
+void Agencia::historicoAstronauta(string cpf) {
+    bool encontrado = false;
+    string nome;
+
+    for (int i = 0; i < astronautas.size(); i++) {
+        if (astronautas[i].getCpf() == cpf) {
+            encontrado = true;
+            nome = astronautas[i].getNome();
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        cout << "ERRO: astronauta " << cpf << " nao cadastrado" << endl;
+        return;
+    }
+
+    cout << "HISTORICO DE " << cpf << " " << nome << endl;
+
+    bool encontrou = false;
+
+    for (int i = 0; i < voos.size(); i++) {
+        if (voos[i].getEmPlanejamento()) {
+            continue;
+        }
+
+        vector<string> passageiros = voos[i].getPassageiros();
+        bool participa = false;
+
+        for (int j = 0; j < passageiros.size(); j++) {
+            if (passageiros[j] == cpf) {
+                participa = true;
+                break;
+            }
+        }
+
+        if (!participa) {
+            continue;
+        }
+
+        encontrou = true;
+
+        cout << "voo " << voos[i].getCodigo() << ": ";
+
+        if (voos[i].getEmCurso()) {
+            cout << "em curso";
+        } else if (voos[i].getExplodido()) {
+            cout << "finalizado com explosao";
+        } else {
+            cout << "finalizado com sucesso";
+        }
+
+        cout << endl;
+    }
+
+    if (!encontrou) {
+        cout << "(nenhum voo)" << endl;
+    }
+}

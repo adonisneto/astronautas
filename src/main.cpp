@@ -67,6 +67,15 @@ int main() {
         } else if (comando == "LISTAR_MORTOS") {
             agencia.listarMortos();
 
+        } else if (comando == "LISTAR_ASTRONAUTAS") {
+            agencia.listarAstronautas();
+
+        } else if (comando == "HISTORICO") {
+            string cpf;
+            cin >> cpf;
+
+            agencia.historicoAstronauta(cpf);
+
         } else {
             cout << "ERRO: comando desconhecido " << comando << endl;
         }

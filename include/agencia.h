@@ -29,6 +29,9 @@ public:
 
     void listarVoos();
     void listarMortos();
+
+    void listarAstronautas();
+    void historicoAstronauta(string cpf);
 };
 
 #endif
